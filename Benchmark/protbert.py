@@ -12,6 +12,7 @@ import requests
 import argparse
 import os
 from tqdm.auto import tqdm
+import sys
 
 def main(args):
     os.makedirs(args.modelFolderPath, exist_ok=True)
@@ -46,15 +47,13 @@ def main(args):
 
     # <b>6. Benchmark Configuration<b>
 
-    min_batch_size = 8
-    max_batch_size = 32
-    inc_batch_size = 8
+    min_batch_size = 128
+    batch_iteration = 4
 
-    min_sequence_length = 64
-    max_sequence_length = 512
-    inc_sequence_length = 64
+    min_sequence_length = 128
+    sequence_length_iteration = 4
 
-    iterations = 10
+    iterations = 1
 
     # <b>7. Start Benchmarking<b>
 
@@ -63,11 +62,13 @@ def main(args):
     with torch.no_grad():
         print((' Benchmarking using ' + device_name + ' ').center(80, '*'))
         print(' Start '.center(80, '*'))
-        for sequence_length in range(min_sequence_length,max_sequence_length+1,inc_sequence_length):
-            for batch_size in range(min_batch_size, max_batch_size+1, inc_batch_size):
+        for sequence_length_power in range(1, sequence_length_iteration+1):
+            sequence_length = min_sequence_length * (2**(sequence_length_power-1))
+            for batch_power in range(1, batch_iteration+1):
+                batch_size = min_batch_size * (2**(batch_power-1))
                 start = time.time()
                 for i in range(iterations):
-                    input_ids = torch.randint(1, 20, (batch_size,sequence_length)).to(device)
+                    input_ids = torch.randint(1, 20, (batch_size, sequence_length)).to(device)
                     results = model(input_ids)[0].cpu().numpy()
                 end = time.time()
                 ms_per_protein = (end-start) / (iterations*batch_size)
