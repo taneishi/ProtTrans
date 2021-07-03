@@ -47,13 +47,12 @@ def main(args):
 
     # <b>6. Benchmark Configuration<b>
 
-    min_batch_size = 128
-    batch_iteration = 4
+    batch_size = 128
 
-    min_sequence_length = 128
-    sequence_length_iteration = 4
+    min_sequence_length = 32
+    sequence_length_iteration = 6
 
-    iterations = 1
+    iterations = 10
 
     # <b>7. Start Benchmarking<b>
 
@@ -64,16 +63,13 @@ def main(args):
         print(' Start '.center(80, '*'))
         for sequence_length_power in range(1, sequence_length_iteration+1):
             sequence_length = min_sequence_length * (2**(sequence_length_power-1))
-            for batch_power in range(1, batch_iteration+1):
-                batch_size = min_batch_size * (2**(batch_power-1))
-                start = time.time()
-                for i in range(iterations):
-                    input_ids = torch.randint(1, 20, (batch_size, sequence_length)).to(device)
-                    results = model(input_ids)[0].cpu().numpy()
-                end = time.time()
-                ms_per_protein = (end-start) / (iterations*batch_size)
-                print('Sequence Length: %4d \t Batch Size: %4d \t Ms per protein %4.2f' %(sequence_length, batch_size, ms_per_protein))
-            print(' Done '.center(80, '*'))
+            start = time.time()
+            for i in range(iterations):
+                input_ids = torch.randint(1, 20, (batch_size, sequence_length)).to(device)
+                results = model(input_ids)[0].cpu().numpy()
+            end = time.time()
+            ms_per_protein = (end-start) / (iterations*batch_size)
+            print('Sequence Length: %4d \t Batch Size: %4d \t Ms per protein %4.2f' %(sequence_length, batch_size, ms_per_protein))
         print(' Finished '.center(80, '*'))
 
 if __name__ == '__main__':
