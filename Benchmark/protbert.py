@@ -47,13 +47,12 @@ def main(args):
 
     # <b>6. Benchmark Configuration<b>
 
-    min_batch_size = 128
-    batch_iteration = 4
+    batch_size = 128
 
-    min_sequence_length = 128
-    sequence_length_iteration = 4
+    min_sequence_length = 32
+    sequence_length_iteration = 6
 
-    iterations = 1
+    iterations = 10
 
     # <b>7. Start Benchmarking<b>
 
