@@ -63,16 +63,13 @@ def main(args):
         print(' Start '.center(80, '*'))
         for sequence_length_power in range(sequence_length_iteration):
             sequence_length = min_sequence_length * (2**sequence_length_power)
-            for batch_power in range(batch_iteration):
-                batch_size = min_batch_size * (2**batch_power)
-                start = time.time()
-                for i in range(iterations):
-                    input_ids = torch.randint(1, 20, (batch_size, sequence_length)).to(device)
-                    results = model(input_ids)[0].cpu().numpy()
-                end = time.time()
-                ms_per_protein = (end-start) / (iterations*batch_size)
-                print('Sequence Length: %4d \t Batch Size: %4d \t Ms per protein %4.2f' %(sequence_length, batch_size, ms_per_protein))
-            print(' Done '.center(80, '*'))
+            start = time.time()
+            for i in range(iterations):
+                input_ids = torch.randint(1, 20, (batch_size, sequence_length)).to(device)
+                results = model(input_ids)[0].cpu().numpy()
+            end = time.time()
+            ms_per_protein = (end-start) / (iterations*batch_size)
+            print('Sequence Length: %4d \t Batch Size: %4d \t Ms per protein %4.2f' %(sequence_length, batch_size, ms_per_protein))
         print(' Finished '.center(80, '*'))
 
 if __name__ == '__main__':
