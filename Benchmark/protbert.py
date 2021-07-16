@@ -62,10 +62,10 @@ def main(args):
     with torch.no_grad():
         print((' Benchmarking using ' + device_name + ' ').center(80, '*'))
         print(' Start '.center(80, '*'))
-        for sequence_length_power in range(1, sequence_length_iteration+1):
-            sequence_length = min_sequence_length * (2**(sequence_length_power-1))
-            for batch_power in range(1, batch_iteration+1):
-                batch_size = min_batch_size * (2**(batch_power-1))
+        for sequence_length_power in range(sequence_length_iteration):
+            sequence_length = min_sequence_length * (2**sequence_length_power)
+            for batch_power in range(batch_iteration):
+                batch_size = min_batch_size * (2**batch_power)
                 start = time.time()
                 for i in range(iterations):
                     input_ids = torch.randint(1, 20, (batch_size, sequence_length)).to(device)
